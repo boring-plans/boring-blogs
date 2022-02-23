@@ -1,0 +1,223 @@
+<template>
+  <v-container
+    ref="container"
+    fluid
+    fill-height
+    class="overflow-hidden align-stretch"
+  >
+    <v-img
+      src="https://picsum.photos/1920/1080?random"
+      width="100%"
+      height="100%"
+      style="position: fixed; top: 0; left: 0"
+    >
+      <div class="shadow"></div>
+    </v-img>
+    <v-row
+      class="justify-center"
+      :class="{
+        'align-self-start': $vuetify.breakpoint.mdAndDown,
+        'pt-8': $vuetify.breakpoint.mdAndDown,
+      }"
+    >
+      <v-col
+        class="d-flex align-center flex-grow-1"
+        cols="12"
+        xl="2"
+        lg="3"
+        md="7"
+        sm="8"
+      >
+        <v-card
+          class="text-center py-4 rounded-xl flex-grow-1 blurred"
+          style="z-index: 1"
+        >
+          <v-avatar size="128" color="transparent" class="outlined">
+            <v-img
+              src="https://avatars.githubusercontent.com/u/38272264?v=4"
+            ></v-img>
+          </v-avatar>
+          <v-card-title class="justify-center"> Newest Boy </v-card-title>
+          <v-card-subtitle
+            class="text-uppercase"
+            style="letter-spacing: 0.37em"
+          >
+            Boring Blogs
+          </v-card-subtitle>
+          <v-card-text class="d-flex justify-space-around align-center">
+            <span>
+              <v-btn icon x-small to="/all">
+                <v-icon small>mdi-script-text </v-icon>
+              </v-btn>
+              <span>122</span>
+            </span>
+            <span>
+              <v-btn icon x-small @click="star">
+                <v-icon small>mdi-star </v-icon>
+              </v-btn>
+              <span>1k</span>
+            </span>
+            <v-divider vertical style="margin: 5px 0" />
+            <v-icon small class="mr-1">mdi-github</v-icon>
+            <v-icon small class="mr-1">mdi-email</v-icon>
+            <v-icon small class="mr-1"> mdi-wechat </v-icon>
+            <v-icon small class="mr-1"> mdi-qqchat </v-icon>
+          </v-card-text>
+          <v-card-text
+            class="py-0"
+            style="letter-spacing: 0.037em; font-size: 10px"
+          >
+            Created with
+            <v-icon color="error" small>mdi-heart</v-icon>
+            In Shanghai
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col
+        cols="12"
+        xl="8"
+        lg="6"
+        md="7"
+        sm="8"
+        class="d-flex flex-wrap align-content-start"
+        :class="{ 'align-content-center': $vuetify.breakpoint.lgAndUp }"
+      >
+        <v-carousel
+          :continuous="false"
+          :cycle="false"
+          :show-arrows="false"
+          :hide-delimiters="categories.length <= carouselSize"
+          :class="{ 'flex-center-carousel': $vuetify.breakpoint.lgAndUp }"
+          :height="carouselHeight"
+          touchless
+          hide-delimiter-background
+        >
+          <v-carousel-item
+            v-for="carousel in Math.ceil(categories.length / carouselSize)"
+            :key="carousel"
+          >
+            <v-row class="flex-grow-1 ma-0" style="width: 100%">
+              <v-col
+                v-for="({ title, description }, index) in categories.slice(
+                  (carousel - 1) * carouselSize,
+                  (carousel - 1) * carouselSize + carouselSize
+                )"
+                :key="index"
+                cols="12"
+                xl="4"
+                lg="4"
+                md="6"
+                sm="6"
+              >
+                <v-card class="rounded-xl pa-1 blurred" :to="`/posts/${title}`">
+                  <v-card-title class="py-2">{{ title }}</v-card-title>
+                  <v-card-text class="text-truncate" :title="description">
+                    {{ description }}
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-carousel-item>
+        </v-carousel>
+      </v-col>
+    </v-row>
+    <v-menu top left offset-y :nudge-right="10">
+      <template #activator="{ on }">
+        <v-btn
+          fab
+          fixed
+          bottom
+          right
+          class="blurred"
+          style="position: fixed"
+          v-on="on"
+        >
+          <v-icon>mdi-apps</v-icon>
+        </v-btn>
+      </template>
+      <v-card class="rounded-lg pa-1 blurred">
+        <v-list-item
+          v-for="({ name, to }, index) in apps"
+          :key="index"
+          class="py-0"
+          dense
+          @click="$router.push(to)"
+        >
+          {{ name }}
+        </v-list-item>
+      </v-card>
+    </v-menu>
+  </v-container>
+</template>
+<script>
+import { mapState } from 'vuex'
+import { star } from '@/utils/common'
+
+export default {
+  name: 'IndexPage',
+  data: () => ({
+    stars: [],
+    containerHeight: 0,
+    star,
+    ...mapState(['apps', 'categories']),
+  }),
+  computed: {
+    carouselSize() {
+      return this.$vuetify.breakpoint.xl
+        ? 15
+        : this.$vuetify.breakpoint.lg
+        ? 12
+        : this.$vuetify.breakpoint.smAndUp
+        ? 6
+        : 3
+    },
+    carouselHeight() {
+      return this.$vuetify.breakpoint.lgAndUp
+        ? Math.floor(this.containerHeight * 0.74)
+        : Math.floor(this.containerHeight * 0.48)
+    },
+  },
+  mounted() {
+    this.generateStars(200)
+  },
+  methods: {
+    generateStars(count) {
+      const { offsetWidth: containerWidth, offsetHeight: containerHeight } =
+        this.$refs.container
+
+      this.containerHeight = containerHeight
+
+      for (let i = 0; i < count; i++) {
+        this.stars.push({
+          x: Math.floor(Math.random() * containerWidth),
+          y: Math.floor(Math.random() * containerHeight * 0.8),
+          size: Math.floor(Math.random() * 4),
+          opacity: Math.floor(Math.random() + 0.37),
+        })
+      }
+    },
+  },
+}
+</script>
+
+<style>
+.flex-center-carousel .v-responsive__content {
+  display: flex;
+  align-items: center;
+}
+.blurred {
+  background: rgba(255, 255, 255, 0.14) !important;
+  position: relative;
+  backdrop-filter: saturate(180%) blur(20px);
+}
+.shadow {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-image: radial-gradient(
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 0.5) 100%
+    ),
+    radial-gradient(rgba(0, 0, 0, 0) 33%, rgba(0, 0, 0, 0.3) 166%);
+}
+</style>
