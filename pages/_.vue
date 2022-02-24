@@ -64,6 +64,18 @@ export default {
       articles,
     }
   },
+  head() {
+    const titleArr = this.$route.params.pathMatch.split('/')
+    return titleArr[1]
+      ? {
+          title: titleArr[1].split('_').pop(),
+          titleTemplate: '%s',
+        }
+      : {
+          title: titleArr[0],
+          titleTemplate: 'Category - %s',
+        }
+  },
 }
 </script>
 <style>

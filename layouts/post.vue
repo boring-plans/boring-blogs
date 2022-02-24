@@ -19,9 +19,7 @@
                 style="overflow: visible !important"
               >
                 <v-avatar size="100" color="#f6f8fa">
-                  <v-img
-                    src="https://avatars.githubusercontent.com/u/38272264?v=4"
-                  ></v-img>
+                  <v-img src="logo.png"></v-img>
                 </v-avatar>
                 <v-card-title class="justify-center pb-0">
                   Newest Boy
@@ -35,10 +33,7 @@
                       </v-btn>
                     </template>
                     <v-card class="pa-1" style="z-index: 1">
-                      <v-img
-                        :src="require('@/static/wechat.jpg')"
-                        width="100"
-                      />
+                      <v-img src="wechat.jpg" width="100" />
                     </v-card>
                   </v-menu>
                   <v-menu right offset-x attach="#contacts">
@@ -48,7 +43,7 @@
                       </v-btn>
                     </template>
                     <v-card class="pa-1" style="z-index: 12">
-                      <v-img :src="require('@/static/qq.png')" width="100" />
+                      <v-img src="qq.png" width="100" />
                     </v-card>
                   </v-menu>
                   <v-btn
@@ -132,9 +127,7 @@
                 color="#f6f8fa"
                 @click="drawer = true"
               >
-                <v-img
-                  src="https://avatars.githubusercontent.com/u/38272264?v=4"
-                ></v-img>
+                <v-img src="logo.png"></v-img>
               </v-avatar>
             </v-row>
             <v-card outlined class="px-6 rounded-xl py-4 mb-6">
@@ -192,9 +185,7 @@
           >
             <v-card-text class="px-0 text-center">
               <v-avatar size="64" color="#f6f8fa">
-                <v-img
-                  src="https://avatars.githubusercontent.com/u/38272264?v=4"
-                ></v-img>
+                <v-img src="logo.png"></v-img>
               </v-avatar>
             </v-card-text>
             <v-divider vertical class="my-12" />
@@ -244,6 +235,9 @@ export default {
     drawer: false,
     posts: [],
   }),
+  head() {
+    return (this.post && this.post.title) || this.category
+  },
   computed: {
     isCategory() {
       return this.$route.params.pathMatch.toLowerCase() === 'all'

@@ -33,9 +33,7 @@
           style="z-index: 1"
         >
           <v-avatar size="128" color="transparent" class="outlined">
-            <v-img
-              src="https://avatars.githubusercontent.com/u/38272264?v=4"
-            ></v-img>
+            <v-img src="logo.png"></v-img>
           </v-avatar>
           <v-card-title class="justify-center"> Newest Boy </v-card-title>
           <v-card-subtitle
@@ -65,7 +63,7 @@
                 </v-btn>
               </template>
               <v-card class="pa-1" style="z-index: 1">
-                <v-img :src="require('@/static/wechat.jpg')" width="100" />
+                <v-img src="wechat.jpg" width="100" />
               </v-card>
             </v-menu>
             <v-menu right offset-x>
@@ -75,7 +73,7 @@
                 </v-btn>
               </template>
               <v-card class="pa-1" style="z-index: 12">
-                <v-img :src="require('@/static/qq.png')" width="100" />
+                <v-img src="qq.png" width="100" />
               </v-card>
             </v-menu>
             <v-btn
