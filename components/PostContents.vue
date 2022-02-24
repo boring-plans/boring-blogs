@@ -31,3 +31,29 @@ export default {
   },
 }
 </script>
+<style>
+.left-colored {
+  border-left: rgb(229, 229, 229) 2px solid;
+}
+.active-content-item {
+  border-color: rgb(24, 103, 192);
+  background-color: rgb(24, 103, 192, 0.07) !important;
+}
+.content-item {
+  cursor: pointer;
+  user-select: none;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+.content-item:hover {
+  background-color: #f6f6f6aa;
+}
+.content-item-level-2 {
+  font-weight: bold !important;
+  color: #000000aa !important;
+}
+.content-item-level-5,
+.content-item-level-6 {
+  font-size: 12px !important;
+}
+</style>

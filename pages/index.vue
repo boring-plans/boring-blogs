@@ -58,10 +58,41 @@
               <span>1k</span>
             </span>
             <v-divider vertical style="margin: 5px 0" />
-            <v-icon small class="mr-1">mdi-github</v-icon>
-            <v-icon small class="mr-1">mdi-email</v-icon>
-            <v-icon small class="mr-1"> mdi-wechat </v-icon>
-            <v-icon small class="mr-1"> mdi-qqchat </v-icon>
+            <v-menu right offset-x>
+              <template #activator="{ on }">
+                <v-btn x-small icon class="mr-1" v-on="on">
+                  <v-icon small> mdi-wechat </v-icon>
+                </v-btn>
+              </template>
+              <v-card class="pa-1" style="z-index: 1">
+                <v-img :src="require('@/static/wechat.jpg')" width="100" />
+              </v-card>
+            </v-menu>
+            <v-menu right offset-x>
+              <template #activator="{ on }">
+                <v-btn x-small icon class="mr-1" v-on="on">
+                  <v-icon small> mdi-qqchat </v-icon>
+                </v-btn>
+              </template>
+              <v-card class="pa-1" style="z-index: 12">
+                <v-img :src="require('@/static/qq.png')" width="100" />
+              </v-card>
+            </v-menu>
+            <v-btn
+              x-small
+              icon
+              href="https://github.com/boring-plans"
+              class="mr-1"
+              ><v-icon small>mdi-github</v-icon></v-btn
+            >
+            <v-btn
+              x-small
+              icon
+              href="mailto://taoqingqiu@gmail.com"
+              class="mr-1"
+            >
+              <v-icon small>mdi-email</v-icon>
+            </v-btn>
           </v-card-text>
           <v-card-text
             class="py-0"
@@ -109,7 +140,7 @@
                 md="6"
                 sm="6"
               >
-                <v-card class="rounded-xl pa-1 blurred" :to="`/posts/${title}`">
+                <v-card class="rounded-xl pa-1 blurred" :to="`/${title}`">
                   <v-card-title class="py-2">{{ title }}</v-card-title>
                   <v-card-text class="text-truncate" :title="description">
                     {{ description }}
@@ -156,12 +187,11 @@ import { star } from '@/utils/common'
 export default {
   name: 'IndexPage',
   data: () => ({
-    stars: [],
     containerHeight: 0,
     star,
-    ...mapState(['apps', 'categories']),
   }),
   computed: {
+    ...mapState(['apps', 'categories']),
     carouselSize() {
       return this.$vuetify.breakpoint.xl
         ? 15
@@ -178,24 +208,13 @@ export default {
     },
   },
   mounted() {
-    this.generateStars(200)
-  },
-  methods: {
-    generateStars(count) {
-      const { offsetWidth: containerWidth, offsetHeight: containerHeight } =
-        this.$refs.container
+    const { offsetHeight } = this.$refs.container
+    this.containerHeight = offsetHeight
 
-      this.containerHeight = containerHeight
-
-      for (let i = 0; i < count; i++) {
-        this.stars.push({
-          x: Math.floor(Math.random() * containerWidth),
-          y: Math.floor(Math.random() * containerHeight * 0.8),
-          size: Math.floor(Math.random() * 4),
-          opacity: Math.floor(Math.random() + 0.37),
-        })
-      }
-    },
+    // import('device-uuid').then((module) => {
+    //   const uuid = new module.DeviceUUID().get()
+    //   console.log(uuid)
+    // })
   },
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <v-card flat class="px-4 py-2 mt-3">
+  <v-card flat>
     <v-card-text class="py-0 d-flex align-center justify-space-between">
       <span>
         <v-btn icon x-small>

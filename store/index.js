@@ -33,7 +33,9 @@ export const state = () => ({
   apps: [
     {
       name: '2048',
-      to: '/posts/Boring Plans/Vue 实现 2048',
+      to: '/Boring Plans/2020-03-02_Vue 实现 2048',
     },
   ],
+  404: ['4', '9', '13', '14', '16', '24'],
+  error: ['32', '25'],
 })

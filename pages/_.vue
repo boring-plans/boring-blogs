@@ -51,8 +51,9 @@ export default {
           }
         }
       )
-      articles.sort((p1, p2) => new Date(p1.date) - new Date(p2.date))
     }
+
+    articles.sort((p1, p2) => new Date(p2.date) - new Date(p1.date))
 
     if (!article && articles.length === 0) {
       return error({ statusCode: 404, message: 'Article not found' })
@@ -76,7 +77,7 @@ code {
   background-color: #f6f8fa !important;
   padding: 6px 12px;
   border-radius: 5px;
-  margin: 12px 0;
+  margin: 10px 0;
   overflow: auto;
 }
 .shiki code {
@@ -89,8 +90,8 @@ code {
 article p {
   text-align: justify;
   letter-spacing: 1.5px;
-  font-size: 15px;
-  margin-bottom: 12px !important;
+  font-size: 15px !important;
+  margin-bottom: 10px !important;
 }
 
 /* header */
@@ -99,7 +100,8 @@ article h3,
 article h4,
 article h5,
 article h6 {
-  margin-bottom: 12px;
+  cursor: pointer;
+  margin-bottom: 10px;
 }
 
 article h2 {
@@ -123,13 +125,6 @@ article h6 {
   font-style: italic;
 }
 
-/* image */
-article img {
-  max-width: 100%;
-  display: block;
-  margin: 0 auto;
-}
-
 /* head link */
 article h2 a,
 article h3 a,
@@ -146,5 +141,54 @@ article h4 a:hover,
 article h5 a:hover,
 article h6 a:hover {
   text-decoration: underline;
+}
+
+/* image */
+article img {
+  max-width: 100%;
+  display: block;
+  margin: 0 auto;
+}
+
+/* ul */
+article ul {
+  margin-bottom: 12px;
+}
+
+/* table */
+article td,
+article th {
+  padding: 0;
+}
+
+article table {
+  border-collapse: collapse;
+  empty-cells: show;
+  margin: 0 auto 12px auto;
+  border: thin solid #f0f0f0;
+  font-size: 15px !important;
+}
+
+article td,
+article th {
+  margin: 0;
+  padding: 0.5em 1em;
+}
+
+article thead {
+  background-color: #f0f0f0;
+  text-align: left;
+}
+
+article tbody tr:nth-child(odd) {
+  background-color: transparent;
+}
+
+article tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+/* text decoration */
+.text-line-through {
+  text-decoration: line-through;
 }
 </style>

@@ -35,7 +35,10 @@
                       </v-btn>
                     </template>
                     <v-card class="pa-1" style="z-index: 1">
-                      <v-img src="@/static/wechat.jpg'" width="100" />
+                      <v-img
+                        :src="require('@/static/wechat.jpg')"
+                        width="100"
+                      />
                     </v-card>
                   </v-menu>
                   <v-menu right offset-x attach="#contacts">
@@ -45,7 +48,7 @@
                       </v-btn>
                     </template>
                     <v-card class="pa-1" style="z-index: 12">
-                      <v-img src="@/static/qq.png" width="100" />
+                      <v-img :src="require('@/static/qq.png')" width="100" />
                     </v-card>
                   </v-menu>
                   <v-btn
@@ -67,15 +70,13 @@
               </v-card>
               <template v-if="!isCategory && post">
                 <v-card
-                  v-if="keywords.length"
+                  v-if="post.tags && post.tags.length"
                   class="mt-3 rounded-xl py-4"
                   outlined
                 >
-                  <v-card-text
-                    class="py-0 d-flex align-center justify-space-between"
-                  >
+                  <v-card-text class="py-0 d-flex align-center">
                     <v-chip
-                      v-for="(keyword, index) in post.keywords"
+                      v-for="(keyword, index) in post.tags"
                       :key="index"
                       small
                       class="mr-1 px-2"
@@ -158,9 +159,12 @@
             </v-card>
             <div v-if="!isCategory" id="vcomments"></div>
           </v-col>
-          <v-col v-if="!concise" cols="auto" class="pt-16">
+          <v-col
+            v-if="!concise && !isCategory && post"
+            cols="auto"
+            class="pt-16"
+          >
             <post-contents
-              v-if="!isCategory"
               :items="titles"
               :active="activeContentTitle"
               @to="toTitle"
@@ -201,8 +205,10 @@
           </v-card>
           <template v-if="!isCategory && post">
             <v-divider class="ma-6" />
-            <statistics visits="100" stars="28" :date="post.date" />
-            <template v-if="titles.length">
+            <v-card class="px-4 py-2 mt-3" flat>
+              <statistics visits="100" stars="28" :date="post.date" />
+            </v-card>
+            <template v-if="titles && titles.length">
               <v-divider class="ma-6" />
               <v-card
                 flat
@@ -210,7 +216,6 @@
                 :style="{ maxHeight: maxDrawerContentsHeight + 'px' }"
               >
                 <post-contents
-                  v-if="!isCategory"
                   :items="titles"
                   :active="activeContentTitle"
                   width="100%"
@@ -225,33 +230,13 @@
   </v-app>
 </template>
 <script>
-// import Valine from 'valine'
 import PostContents from '@/components/PostContents.vue'
 import Statistics from '@/components/Statistics.vue'
 
 export default {
   name: 'PostLayout',
   components: { PostContents, Statistics },
-  async asyncData({ $content }) {
-    const posts = (
-      await $content({ deep: true }).only(['path', 'keywords']).fetch()
-    ).map((p) => {
-      const categoryAndTitle = p.path.split('/')
-      const infoArr = categoryAndTitle[1].split('_')
-      return {
-        date: infoArr[0],
-        title: infoArr[1],
-        category: categoryAndTitle[0],
-        keywords: p.keywords,
-      }
-    })
-
-    posts.sort((p1, p2) => new Date(p1.date) - new Date(p2.date))
-
-    return {
-      posts,
-    }
-  },
+  scrollToTop: true,
   data: () => ({
     titles: [],
     showToTop: false,
@@ -261,17 +246,19 @@ export default {
   }),
   computed: {
     isCategory() {
-      return this.$store.state.categories.some(
-        (c) => this.$route.params.pathMatch === c.title
-      )
+      return this.$route.params.pathMatch.toLowerCase() === 'all'
+        ? 'all'
+        : this.$store.state.categories.some(
+            (c) => this.$route.params.pathMatch === c.title
+          )
     },
     category() {
       return this.$route.params.pathMatch.split('/')[0]
     },
     post() {
       return !this.isCategory && this.posts
-        ? this.posts.find(
-            (p) => p.title === this.$route.params.pathMatch.split('/')[1]
+        ? this.posts.find((p) =>
+            this.$route.params.pathMatch.split('/')[1].includes(p.title)
           )
         : null
     },
@@ -291,17 +278,17 @@ export default {
       }, 0)
     },
     nextPost() {
-      if (this.posts) {
+      if (this.posts && this.posts.length) {
         const currIndex = this.posts
-          .map((p) => `${p.category}/${p.title}`)
+          .map((p) => `${p.category}/${p.date}_${p.title}`)
           .indexOf(this.$route.params.pathMatch)
 
         return currIndex + 1 < this.posts.length
           ? {
               title: this.posts[currIndex + 1].title,
               to: `/${this.posts[currIndex + 1].category}/${
-                this.posts[currIndex + 1].title
-              }`,
+                this.posts[currIndex + 1].date
+              }_${this.posts[currIndex + 1].title}`,
             }
           : {
               title: 'Back to home',
@@ -313,15 +300,15 @@ export default {
     lastPost() {
       if (this.posts) {
         const currIndex = this.posts
-          .map((p) => `${p.category}/${p.title}`)
+          .map((p) => `${p.category}/${p.date}_${p.title}`)
           .indexOf(this.$route.params.pathMatch)
 
-        return currIndex - 2 >= 0
+        return currIndex - 1 >= 0
           ? {
               title: this.posts[currIndex - 1].title,
-              to: `/posts/${this.posts[currIndex - 1].category}/${
-                this.posts[currIndex - 1].title
-              }`,
+              to: `/${this.posts[currIndex - 1].category}/${
+                this.posts[currIndex - 1].date
+              }_${this.posts[currIndex - 1].title}`,
             }
           : {
               title: 'Back to home',
@@ -339,13 +326,14 @@ export default {
   },
   watch: {
     $route(val) {
-      val &&
-        !this.isCategory &&
+      const valineComments = document.getElementById('vcomments')
+      valineComments && (valineComments.innerHTML = '')
+
+      if (val && !this.isCategory) {
         setTimeout(() => {
           this.initialize()
-        })
-
-      window.scrollTo({ top: 0 })
+        }, 100)
+      }
     },
     concise(val) {
       if (!val) {
@@ -361,6 +349,23 @@ export default {
     window.removeEventListener('scroll', this.updateWindowScrollY)
   },
   methods: {
+    async loadPosts() {
+      const posts = (
+        await this.$content({ deep: true }).only(['path', 'tags']).fetch()
+      ).map((p) => {
+        const categoryAndTitle = p.path.split('/')
+        const infoArr = categoryAndTitle[2].split('_')
+        return {
+          date: infoArr[0],
+          title: infoArr[1],
+          category: categoryAndTitle[1],
+          tags: p.tags,
+        }
+      })
+
+      posts.sort((p1, p2) => new Date(p1.date) - new Date(p2.date))
+      this.posts = posts
+    },
     toTop() {
       window.scrollTo({
         top: 0,
@@ -376,7 +381,7 @@ export default {
     initialize() {
       // -- contents
       this.titles = []
-      const post = document.getElementsByClassName('post')[0]
+      const post = document.getElementsByTagName('article')[0]
       post &&
         document.querySelectorAll('h2,h3,h4,h5,h6').forEach((h) => {
           const totalScrollTop = h.offsetTop + post.offsetTop + 40
@@ -390,14 +395,18 @@ export default {
         })
 
       // -- comment system
+      const Valine = require('valine')
       // eslint-disable-next-line no-new
-      // new Valine({
-      //   el: '#vcomments',
-      //   appId: 'u25kUK10If24GJhPDBqHfDle-gzGzoHsz',
-      //   appKey: 'JjtyBxp9QAmFt0gDRsvUOCEl',
-      //   avatar: 'retro',
-      //   placeholder: "This time, Yuri's going down!",
-      // })
+      new Valine({
+        el: '#vcomments',
+        appId: 'u25kUK10If24GJhPDBqHfDle-gzGzoHsz',
+        appKey: 'JjtyBxp9QAmFt0gDRsvUOCEl',
+        avatar: 'retro',
+        placeholder: "This time, Yuri's going down!",
+      })
+
+      // -- posts
+      this.loadPosts()
     },
     updateWindowScrollY() {
       this.windowScrollY = window.scrollY
@@ -406,3 +415,18 @@ export default {
   },
 }
 </script>
+<style>
+.sticky-top {
+  position: sticky !important;
+  top: 0 !important;
+}
+
+/* comments */
+#vcomments .vwrap {
+  border-radius: 24px;
+  border: thin solid rgba(0, 0, 0, 0.12);
+}
+#veditor {
+  letter-spacing: 0.5px;
+}
+</style>

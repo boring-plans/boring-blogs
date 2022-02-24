@@ -1,19 +1,22 @@
 <template>
   <v-app>
-    <h1 v-if="error.statusCode === 404">
-      {{ pageNotFound }}
-    </h1>
-    <h1 v-else>
-      {{ otherError }}
-    </h1>
-    <NuxtLink to="/"> Home page </NuxtLink>
+    <v-main>
+      <v-container
+        :style="{ backgroundImage }"
+        fluid
+        fill-height
+        style="background-size: contain; background-position: center center"
+        class="justify-end align-end"
+      >
+        <v-btn text to="/" small> Back to home </v-btn>
+      </v-container>
+    </v-main>
   </v-app>
 </template>
 
 <script>
 export default {
   name: 'EmptyLayout',
-  layout: 'empty',
   props: {
     error: {
       type: Object,
@@ -33,11 +36,24 @@ export default {
       title,
     }
   },
+  computed: {
+    backgroundImage() {
+      const imageKey = this.error.statusCode === 404 ? '404' : 'error'
+      const images = this.$store.state[imageKey]
+      const imageRandom = require(`@/static/${imageKey}/${
+        images[Math.floor(Math.random() * images.length)]
+      }.svg`)
+      return `url(${imageRandom})`
+    },
+  },
 }
 </script>
 
 <style scoped>
 h1 {
   font-size: 20px;
+}
+html {
+  overflow: auto;
 }
 </style>

@@ -1,5 +1,5 @@
 {
-  "name": "broing-blogs",
+  "name": "boring-blogs",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -15,6 +15,7 @@
   "dependencies": {
     "@nuxt/content": "^1.15.1",
     "core-js": "^3.19.3",
+    "device-uuid": "^1.0.4",
     "fireworks": "^2.2.7",
     "nuxt": "^2.15.8",
     "shiki": "^0.10.1",
