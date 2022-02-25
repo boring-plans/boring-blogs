@@ -1,9 +1,9 @@
 <template>
   <v-card flat>
-    <article v-if="article">
+    <article v-show="article">
       <nuxt-content :document="article" />
     </article>
-    <v-list v-else dense rounded>
+    <v-list v-show="!article" dense rounded>
       <v-list-item
         v-for="({ title, to, date }, index) in articles"
         :key="index"
