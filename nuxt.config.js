@@ -87,7 +87,9 @@ export default {
     },
   },
 
-  publicPath: '/boring-blogs',
+  router: {
+    base: '/boring-blogs/',
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {},
