@@ -76,10 +76,6 @@ export default {
           titleTemplate: 'Category - %s',
         }
   },
-  mounted() {
-    const postList = document.getElementById('post-list')
-    postList && postList.innerText.trim() === '' && postList.remove()
-  },
 }
 </script>
 <style>

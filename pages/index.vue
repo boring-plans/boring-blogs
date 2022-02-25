@@ -138,7 +138,10 @@
                 md="6"
                 sm="6"
               >
-                <v-card class="rounded-xl pa-1 blurred" :to="`/${title}`">
+                <v-card
+                  class="rounded-xl pa-1 blurred"
+                  :to="`/posts?category=${title}`"
+                >
                   <v-card-title class="py-2">{{ title }}</v-card-title>
                   <v-card-text class="text-truncate" :title="description">
                     {{ description }}

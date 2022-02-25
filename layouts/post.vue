@@ -63,7 +63,7 @@
                   </v-btn>
                 </v-card-text>
               </v-card>
-              <template v-if="!isCategory && post">
+              <template v-if="post">
                 <v-card
                   v-if="post.tags && post.tags.length"
                   class="mt-3 rounded-xl py-4"
@@ -89,40 +89,28 @@
           <v-col cols="12" md="10" lg="7" xl="6" class="py-0">
             <v-row class="py-0 align-center" no-gutters>
               <v-breadcrumbs
-                v-if="post || isCategory"
+                v-if="post"
                 class="py-4 px-1"
-                :items="
-                  isCategory
-                    ? [
-                        {
-                          text: 'Home',
-                          to: '/',
-                        },
-                        {
-                          text: category,
-                        },
-                      ]
-                    : [
-                        {
-                          text: 'Home',
-                          to: '/',
-                        },
-                        {
-                          text: category,
-                          disabled: false,
-                          to: `/${category}`,
-                          exact: true,
-                        },
-                        {
-                          text: post.title,
-                        },
-                      ]
-                "
+                :items="[
+                  {
+                    text: 'Home',
+                    to: '/',
+                  },
+                  {
+                    text: category,
+                    disabled: false,
+                    to: `/posts?category=${category}`,
+                    exact: true,
+                  },
+                  {
+                    text: post.title,
+                  },
+                ]"
               ></v-breadcrumbs>
               <v-spacer />
               <v-avatar
                 v-if="concise"
-                size="32"
+                size="28"
                 class="mr-2"
                 color="#f6f8fa"
                 @click="drawer = true"
@@ -132,31 +120,25 @@
             </v-row>
             <v-card outlined class="px-6 rounded-xl py-4 mb-6">
               <Nuxt />
-              <template v-if="!isCategory">
-                <v-card-text class="pt-8 pb-3 px-0">
-                  <v-divider />
-                </v-card-text>
-                <v-card-text
-                  class="d-flex align-center justify-space-between px-0"
-                >
-                  <v-btn text small class="px-1" :to="lastPost.to">
-                    <v-icon small class="mr-1">mdi-arrow-left</v-icon>
-                    {{ lastPost.title }}
-                  </v-btn>
-                  <v-btn text small class="px-1" :to="nextPost.to">
-                    {{ nextPost.title }}
-                    <v-icon small class="ml-1">mdi-arrow-right </v-icon>
-                  </v-btn>
-                </v-card-text>
-              </template>
+              <v-card-text class="pt-8 pb-3 px-0">
+                <v-divider />
+              </v-card-text>
+              <v-card-text
+                class="d-flex align-center justify-space-between px-0"
+              >
+                <v-btn text small class="px-1" :to="lastPost.to">
+                  <v-icon small class="mr-1">mdi-arrow-left</v-icon>
+                  {{ lastPost.title }}
+                </v-btn>
+                <v-btn text small class="px-1" :to="nextPost.to">
+                  {{ nextPost.title }}
+                  <v-icon small class="ml-1">mdi-arrow-right </v-icon>
+                </v-btn>
+              </v-card-text>
             </v-card>
-            <div v-if="!isCategory" id="vcomments"></div>
+            <div id="vcomments"></div>
           </v-col>
-          <v-col
-            v-if="!concise && !isCategory && post"
-            cols="auto"
-            class="pt-16"
-          >
+          <v-col v-if="!concise && post" cols="auto" class="pt-16">
             <post-contents
               :items="titles"
               :active="activeContentTitle"
@@ -194,7 +176,7 @@
               <v-card-text class="px-0"> Bag'em up! </v-card-text>
             </v-card-text>
           </v-card>
-          <template v-if="!isCategory && post">
+          <template v-if="post">
             <v-divider class="ma-6" />
             <v-card class="px-4 py-2 mt-3" flat>
               <statistics visits="100" stars="28" :date="post.date" />
@@ -239,18 +221,11 @@ export default {
     return (this.post && this.post.title) || this.category
   },
   computed: {
-    isCategory() {
-      return this.$route.params.pathMatch.toLowerCase() === 'all'
-        ? 'all'
-        : this.$store.state.categories.some(
-            (c) => this.$route.params.pathMatch === c.title
-          )
-    },
     category() {
       return this.$route.params.pathMatch.split('/')[0]
     },
     post() {
-      return !this.isCategory && this.posts
+      return this.posts
         ? this.posts.find((p) =>
             this.$route.params.pathMatch.split('/')[1].includes(p.title)
           )
@@ -320,10 +295,7 @@ export default {
   },
   watch: {
     $route(val) {
-      const valineComments = document.getElementById('vcomments')
-      valineComments && (valineComments.innerHTML = '')
-
-      if (val && !this.isCategory) {
+      if (val) {
         setTimeout(() => {
           this.initialize()
         }, 100)
@@ -336,7 +308,7 @@ export default {
     },
   },
   mounted() {
-    !this.isCategory && this.initialize()
+    this.initialize()
     window.addEventListener('scroll', this.updateWindowScrollY)
   },
   beforeDestroy() {
@@ -389,6 +361,8 @@ export default {
         })
 
       // -- comment system
+      const valineComments = document.getElementById('vcomments')
+      valineComments && (valineComments.innerHTML = '')
       const Valine = require('valine')
       // eslint-disable-next-line no-new
       new Valine({
@@ -397,6 +371,7 @@ export default {
         appKey: 'JjtyBxp9QAmFt0gDRsvUOCEl',
         avatar: 'retro',
         placeholder: "This time, Yuri's going down!",
+        path: decodeURI(this.$route.path),
       })
 
       // -- posts
