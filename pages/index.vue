@@ -44,16 +44,16 @@
           </v-card-subtitle>
           <v-card-text class="d-flex justify-space-around align-center">
             <span>
-              <v-btn icon x-small to="/all">
+              <v-btn icon x-small to="/posts">
                 <v-icon small>mdi-script-text </v-icon>
               </v-btn>
-              <span>122</span>
+              <span>{{ generalizeAmount(posts) }}</span>
             </span>
             <span>
-              <v-btn icon x-small @click="star">
+              <v-btn icon x-small @click="addStar">
                 <v-icon small>mdi-star </v-icon>
               </v-btn>
-              <span>1k</span>
+              <span>{{ generalizeAmount(stars) }}</span>
             </span>
             <v-divider vertical style="margin: 5px 0" />
             <v-menu right offset-x>
@@ -183,13 +183,18 @@
 </template>
 <script>
 import { mapState } from 'vuex'
-import { star } from '@/utils/common'
+import { star, generalizeAmount } from '@/utils/common'
+import { getStars } from '@/utils/leancloud'
 
 export default {
   name: 'IndexPage',
   data: () => ({
     containerHeight: 0,
     star,
+    posts: '-',
+    stars: '-',
+    generalizeAmount,
+    addStarTimerHandle: null,
   }),
   computed: {
     ...mapState(['apps', 'categories']),
@@ -208,14 +213,32 @@ export default {
         : Math.floor(this.containerHeight * 0.48)
     },
   },
-  mounted() {
+  async mounted() {
     const { offsetHeight } = this.$refs.container
     this.containerHeight = offsetHeight
 
-    // import('device-uuid').then((module) => {
-    //   const uuid = new module.DeviceUUID().get()
-    //   console.log(uuid)
-    // })
+    // posts
+    this.posts = (await this.$content({ deep: true }).fetch()).length
+
+    // stars
+    this.stars = await getStars('/boring-blogs')
+  },
+  methods: {
+    addStar(ev) {
+      star(ev)
+
+      // 防抖
+      if (!this.addStarTimerHandle) {
+        const { star: addStar } = require('@/utils/leancloud')
+        addStar('/boring-blogs')
+        getStars('/boring-blogs').then((count) => {
+          this.stars = count
+        })
+        this.addStarTimerHandle = setTimeout(() => {
+          this.addStarTimerHandle = null
+        }, 2000)
+      }
+    },
   },
 }
 </script>

@@ -140,7 +140,7 @@ export default {
   }),
   computed: {
     category() {
-      return this.$route.query.category
+      return this.$route.query.category || 'All'
     },
     concise() {
       return this.$vuetify.breakpoint.mdAndDown
@@ -153,12 +153,21 @@ export default {
       }
     },
   },
+  mounted() {
+    window.addEventListener('scroll', this.checkWhetherShowToTop)
+  },
+  beforeDestroy() {
+    window.removeEventListener('scroll', this.checkWhetherShowToTop)
+  },
   methods: {
     toTop() {
       window.scrollTo({
         top: 0,
         behavior: 'smooth',
       })
+    },
+    checkWhetherShowToTop() {
+      this.showToTop = window.scrollY > 800
     },
   },
 }

@@ -16,3 +16,9 @@ export const star = (ev) => {
     bubbleSizeMaximum: 8,
   })
 }
+
+export const generalizeAmount = (amount) => {
+  const k = Math.floor(amount / 1000)
+  const m = Math.floor(amount / 1000000)
+  return m > 0 ? `${m}m+` : k > 0 ? `${k}k+` : amount
+}

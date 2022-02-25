@@ -1023,7 +1023,7 @@
     "@types/superagent" "^4.1.7"
     superagent "^5.2.2"
 
-"@leancloud/platform-adapters-browser@^1.1.0":
+"@leancloud/platform-adapters-browser@^1.1.0", "@leancloud/platform-adapters-browser@^1.5.2":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@leancloud/platform-adapters-browser/-/platform-adapters-browser-1.5.2.tgz#5c5220479ea4801b3db0e0184599e4339bb1ee46"
   integrity sha512-O7FRG4KvH20tiIP+dUbb7FE7kgkwEZifu7XmSRdPB5yO/+wR61BKykVQggQUdqJE6T9HZVSrqqbWWNqcMdJK6g==
@@ -1031,7 +1031,7 @@
     "@leancloud/adapter-types" "^5.0.0"
     "@leancloud/adapters-superagent" "^1.4.2"
 
-"@leancloud/platform-adapters-node@^1.1.0":
+"@leancloud/platform-adapters-node@^1.1.0", "@leancloud/platform-adapters-node@^1.5.2":
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@leancloud/platform-adapters-node/-/platform-adapters-node-1.5.2.tgz#0b4f47bb73da0a063f24c970b6b6dda95d54edb0"
   integrity sha512-FhvL6u0CXG33M5UCla2Rfja6Rrv8Sj1mrRWCZvI6m5sW4A7RyWFICW8akBL++uHUNP8WDc7szfrBz8TJHQWDcg==
@@ -1042,7 +1042,7 @@
     localstorage-memory "^1.0.2"
     ws "^5.2.2"
 
-"@leancloud/platform-adapters-weapp@^1.2.0":
+"@leancloud/platform-adapters-weapp@^1.2.0", "@leancloud/platform-adapters-weapp@^1.6.1":
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/@leancloud/platform-adapters-weapp/-/platform-adapters-weapp-1.6.1.tgz#20f8927769357491c19043396c0da14391c8260b"
   integrity sha512-/Pxj0Zk9829OTQdt1KdfglqVBiOteber8gUzw5Kgjws1+hlPJ7x8x5VZcdPM3lnTh6UsP4f6CkOtS/QOeLu6JA==
@@ -2547,6 +2547,14 @@ babel-plugin-polyfill-regenerator@^0.3.0:
   dependencies:
     "@babel/helper-define-polyfill-provider" "^0.3.1"
 
+babel-runtime@^6.26.0:
+  version "6.26.0"
+  resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
+  integrity sha1-llxwWGaOgrVde/4E/yM3vItWR/4=
+  dependencies:
+    core-js "^2.4.0"
+    regenerator-runtime "^0.11.0"
+
 bail@^1.0.0:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/bail/-/bail-1.0.5.tgz#b6fa133404a392cbc1f8c4bf63f5953351e7a776"
@@ -3397,7 +3405,7 @@ core-js-compat@^3.12.1, core-js-compat@^3.20.2, core-js-compat@^3.21.0:
     browserslist "^4.19.1"
     semver "7.0.0"
 
-core-js@^2.6.5:
+core-js@^2.4.0, core-js@^2.6.5:
   version "2.6.12"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha512-Kb2wC0fvsWfQrgk8HU5lW6U/Lcs8+9aaYcy4ZFc6DDlo4nZ7n70dEgE5rtR0oG6ufKDUnrwfWL1mXR5ljDatrQ==
@@ -6057,7 +6065,7 @@ leancloud-realtime-plugin-live-query@^1.2.0:
   resolved "https://registry.yarnpkg.com/leancloud-realtime-plugin-live-query/-/leancloud-realtime-plugin-live-query-1.2.0.tgz#1e07da1b5b99e44cddbc3b052234422f278c4ab9"
   integrity sha512-eJooIH8/FyUoozr3Eeby2DpDnmX39m1bfxfxlYPuojkio+i/DLwPD+aTHnRDH6QXJcT6tNTt85RcxVR/Txg98Q==
 
-leancloud-realtime@^5.0.0-alpha.3:
+leancloud-realtime@^5.0.0-alpha.3, leancloud-realtime@^5.0.0-rc.4:
   version "5.0.0-rc.7"
   resolved "https://registry.yarnpkg.com/leancloud-realtime/-/leancloud-realtime-5.0.0-rc.7.tgz#ef314fdf598a0a32a3eed9453cc2ca31cfa79781"
   integrity sha512-T5D12cvONg/eLlMKO+J31CdolM0ydgCnRpcTwWaCq1KrboROOvwgovKQpfeSKm4MxKNIio5gEKf41xAbE3K5dA==
@@ -6089,6 +6097,25 @@ leancloud-storage@^3.0.4:
     localstorage-memory "^1.0.1"
     md5 "^2.0.0"
     superagent "^3.3.1"
+    underscore "^1.8.3"
+    uuid "^3.3.2"
+
+leancloud-storage@^4.12.2:
+  version "4.12.2"
+  resolved "https://registry.yarnpkg.com/leancloud-storage/-/leancloud-storage-4.12.2.tgz#fff61413b248dd75b096881437119719099503f2"
+  integrity sha512-GsyzkNufQoZ5f75vt3tgwhkhfxQ2ZR88Kq3Kt6HoWtsY13+L0Y6IBmGcLsNvN4NSKB2Qd01GNk2m9b9KFELHlA==
+  dependencies:
+    "@leancloud/adapter-types" "^5.0.0"
+    "@leancloud/platform-adapters-browser" "^1.5.2"
+    "@leancloud/platform-adapters-node" "^1.5.2"
+    "@leancloud/platform-adapters-weapp" "^1.6.1"
+    babel-runtime "^6.26.0"
+    debug "^3.1.0"
+    eventemitter3 "^2.0.3"
+    leancloud-realtime "^5.0.0-rc.4"
+    leancloud-realtime-plugin-live-query "^1.2.0"
+    md5 "^2.0.0"
+    promise-timeout "^1.3.0"
     underscore "^1.8.3"
     uuid "^3.3.2"
 
@@ -8470,6 +8497,11 @@ regenerate@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.2.tgz#b9346d8827e8f5a32f7ba29637d398b69014848a"
   integrity sha512-zrceR/XhGYU/d/opr2EKO7aRHUeiBI8qjtfHqADTwZd6Szfy16la6kqD0MIUs5z5hx6AaKa+PixpPrR289+I0A==
+
+regenerator-runtime@^0.11.0:
+  version "0.11.1"
+  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.11.1.tgz#be05ad7f9bf7d22e056f9726cee5017fbf19e2e9"
+  integrity sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==
 
 regenerator-runtime@^0.13.4, regenerator-runtime@^0.13.7:
   version "0.13.9"

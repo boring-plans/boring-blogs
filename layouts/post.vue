@@ -81,7 +81,7 @@
                   </v-card-text>
                 </v-card>
                 <v-card flat class="mt-3 rounded-xl py-4" outlined>
-                  <statistics visits="100" stars="28" :date="post.date" />
+                  <statistics :date="post.date" />
                 </v-card>
               </template>
             </v-card>
@@ -205,6 +205,7 @@
 <script>
 import PostContents from '@/components/PostContents.vue'
 import Statistics from '@/components/Statistics.vue'
+import { visit } from '@/utils/leancloud'
 
 export default {
   name: 'PostLayout',
@@ -216,6 +217,8 @@ export default {
     windowScrollY: 0,
     drawer: false,
     posts: [],
+    visits: '-',
+    stars: '-',
   }),
   head() {
     return (this.post && this.post.title) || this.category
@@ -304,6 +307,11 @@ export default {
     concise(val) {
       if (!val) {
         this.drawer = false
+      }
+    },
+    post(val) {
+      if (val) {
+        visit(decodeURI(this.$route.path))
       }
     },
   },

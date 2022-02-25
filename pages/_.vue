@@ -3,78 +3,28 @@
     <article>
       <nuxt-content :document="article" />
     </article>
-    <v-list id="post-list" dense rounded>
-      <v-list-item
-        v-for="({ title, to, date }, index) in articles"
-        :key="index"
-        :to="to"
-      >
-        {{ title }}
-        <v-divider class="mx-2" />
-        <span class="text-caption">
-          {{ new Date(date).toDateString() }}
-        </span>
-      </v-list-item>
-    </v-list>
   </v-card>
 </template>
 <script>
 export default {
   layout: 'post',
-  async asyncData({ $content, params, error, store }) {
+  async asyncData({ $content, params, error }) {
     const path = `/${params.pathMatch || 'index'}`
     const [article] = await $content({ deep: true }).where({ path }).fetch()
-    const category = store.state.categories.find(
-      (c) => params.pathMatch === c.title
-    )
-    let articles = []
 
-    if (category) {
-      articles = (await $content({ deep: true }).only(['path']).fetch())
-        .filter((c) => c.path.startsWith(`/${category.title}`))
-        .map((p) => {
-          const infoArr = p.path.split('/')[2].split('_')
-          return {
-            title: infoArr[1],
-            date: infoArr[0],
-            to: p.path,
-          }
-        })
-    } else if (params.pathMatch.toLowerCase() === 'all') {
-      articles = (await $content({ deep: true }).only(['path']).fetch()).map(
-        (p) => {
-          const infoArr = p.path.split('/')[2].split('_')
-          return {
-            title: infoArr[1],
-            date: infoArr[0],
-            to: p.path,
-          }
-        }
-      )
-    }
-
-    articles.sort((p1, p2) => new Date(p2.date) - new Date(p1.date))
-
-    if (!article && articles.length === 0) {
+    if (!article) {
       return error({ statusCode: 404, message: 'Article not found' })
     }
 
     return {
       article,
-      articles,
     }
   },
   head() {
-    const titleArr = this.$route.params.pathMatch.split('/')
-    return titleArr[1]
-      ? {
-          title: titleArr[1].split('_').pop(),
-          titleTemplate: '%s',
-        }
-      : {
-          title: titleArr[0],
-          titleTemplate: 'Category - %s',
-        }
+    return {
+      title: this.$route.params.pathMatch.split('/')[0],
+      titleTemplate: 'Category - %s',
+    }
   },
 }
 </script>
