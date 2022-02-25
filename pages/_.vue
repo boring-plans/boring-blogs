@@ -1,9 +1,9 @@
 <template>
   <v-card flat>
-    <article v-show="article">
+    <article id="the-post">
       <nuxt-content :document="article" />
     </article>
-    <v-list v-show="!article" dense rounded>
+    <v-list id="post-list" dense rounded>
       <v-list-item
         v-for="({ title, to, date }, index) in articles"
         :key="index"
@@ -75,6 +75,13 @@ export default {
           title: titleArr[0],
           titleTemplate: 'Category - %s',
         }
+  },
+  mounted() {
+    const postList = document.getElementById('post-list')
+    const thePost = document.getElementById('the-post')
+
+    postList && postList.innerText.trim() === '' && postList.remove()
+    thePost && thePost.innerText.trim() === '' && thePost.remove()
   },
 }
 </script>
