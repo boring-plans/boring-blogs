@@ -1,23 +1,21 @@
 <template>
   <v-card flat>
-    <article id="the-post">
+    <article>
       <nuxt-content :document="article" />
     </article>
-    <no-ssr>
-      <v-list id="post-list" dense rounded>
-        <v-list-item
-          v-for="({ title, to, date }, index) in articles"
-          :key="index"
-          :to="to"
-        >
-          {{ title }}
-          <v-divider class="mx-2" />
-          <span class="text-caption">
-            {{ new Date(date).toDateString() }}
-          </span>
-        </v-list-item>
-      </v-list>
-    </no-ssr>
+    <v-list id="post-list" dense rounded>
+      <v-list-item
+        v-for="({ title, to, date }, index) in articles"
+        :key="index"
+        :to="to"
+      >
+        {{ title }}
+        <v-divider class="mx-2" />
+        <span class="text-caption">
+          {{ new Date(date).toDateString() }}
+        </span>
+      </v-list-item>
+    </v-list>
   </v-card>
 </template>
 <script>
@@ -80,10 +78,7 @@ export default {
   },
   mounted() {
     const postList = document.getElementById('post-list')
-    const thePost = document.getElementById('the-post')
-
     postList && postList.innerText.trim() === '' && postList.remove()
-    thePost && thePost.innerText.trim() === '' && thePost.remove()
   },
 }
 </script>
