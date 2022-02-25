@@ -3,19 +3,21 @@
     <article id="the-post">
       <nuxt-content :document="article" />
     </article>
-    <v-list id="post-list" dense rounded>
-      <v-list-item
-        v-for="({ title, to, date }, index) in articles"
-        :key="index"
-        :to="to"
-      >
-        {{ title }}
-        <v-divider class="mx-2" />
-        <span class="text-caption">
-          {{ new Date(date).toDateString() }}
-        </span>
-      </v-list-item>
-    </v-list>
+    <no-ssr>
+      <v-list id="post-list" dense rounded>
+        <v-list-item
+          v-for="({ title, to, date }, index) in articles"
+          :key="index"
+          :to="to"
+        >
+          {{ title }}
+          <v-divider class="mx-2" />
+          <span class="text-caption">
+            {{ new Date(date).toDateString() }}
+          </span>
+        </v-list-item>
+      </v-list>
+    </no-ssr>
   </v-card>
 </template>
 <script>
