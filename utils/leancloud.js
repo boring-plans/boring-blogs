@@ -1,9 +1,10 @@
 const AV = require('leancloud-storage')
 
-AV.init({
-  appId: 'aleMaag0GPA84gHE7cLIMiEu-MdYXbMMI',
-  appKey: 'jKltRbz0dlM46xcpBJPajso7',
-})
+!AV.applicationId &&
+  AV.init({
+    appId: 'aleMaag0GPA84gHE7cLIMiEu-MdYXbMMI',
+    appKey: 'jKltRbz0dlM46xcpBJPajso7',
+  })
 
 export const visit = (target) => {
   import('device-uuid').then((module) => {
