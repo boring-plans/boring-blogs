@@ -132,7 +132,7 @@
 </template>
 <script>
 export default {
-  name: 'PostsLayout',
+  name: 'CategoryLayout',
   scrollToTop: true,
   data: () => ({
     showToTop: false,
@@ -140,7 +140,7 @@ export default {
   }),
   computed: {
     category() {
-      return this.$route.query.category || 'All'
+      return this.$route.params.category
     },
     concise() {
       return this.$vuetify.breakpoint.mdAndDown

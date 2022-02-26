@@ -99,7 +99,7 @@
                   {
                     text: category,
                     disabled: false,
-                    to: `/posts?category=${category}`,
+                    to: `/${category}`,
                     exact: true,
                   },
                   {

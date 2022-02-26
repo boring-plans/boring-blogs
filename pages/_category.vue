@@ -15,23 +15,14 @@
 </template>
 <script>
 export default {
-  name: 'PostsPage',
-  layout: 'posts',
-  data: () => ({ articles: [] }),
-  head() {
-    return {
-      title: this.$route.query.category || 'All Posts',
-      titleTemplate: 'Category - %s',
-    }
-  },
-  async mounted() {
-    const articles = (
-      await this.$content({ deep: true }).only(['path']).fetch()
-    )
+  name: 'CategoryPage',
+  layout: 'category',
+  async asyncData({ $content, params }) {
+    const articles = (await $content({ deep: true }).only(['path']).fetch())
       .filter(
         (c) =>
-          !this.$route.query.category ||
-          c.path.startsWith(`/${this.$route.query.category}`)
+          params.category.toLowerCase() === 'all-posts' ||
+          c.path.startsWith(`/${params.category}`)
       )
       .map((p) => {
         const infoArr = p.path.split('/')[2].split('_')
@@ -43,7 +34,16 @@ export default {
       })
 
     articles.sort((p1, p2) => new Date(p2.date) - new Date(p1.date))
-    this.articles = articles
+
+    return {
+      articles,
+    }
+  },
+  head() {
+    return {
+      title: this.$route.query.category || 'All Posts',
+      titleTemplate: 'Category - %s',
+    }
   },
 }
 </script>

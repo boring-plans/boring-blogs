@@ -44,7 +44,7 @@
           </v-card-subtitle>
           <v-card-text class="d-flex justify-space-around align-center">
             <span>
-              <v-btn icon x-small to="/posts">
+              <v-btn icon x-small to="/all-posts">
                 <v-icon small>mdi-script-text </v-icon>
               </v-btn>
               <span>{{ generalizeAmount(posts) }}</span>
@@ -138,10 +138,7 @@
                 md="6"
                 sm="6"
               >
-                <v-card
-                  class="rounded-xl pa-1 blurred"
-                  :to="`/posts?category=${title}`"
-                >
+                <v-card class="rounded-xl pa-1 blurred" :to="`/${title}`">
                   <v-card-title class="py-2">{{ title }}</v-card-title>
                   <v-card-text class="text-truncate" :title="description">
                     {{ description }}
