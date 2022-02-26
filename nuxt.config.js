@@ -80,7 +80,6 @@ export default {
 
   router: {
     base: '/boring-blogs/',
-    mode: 'hash',
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
