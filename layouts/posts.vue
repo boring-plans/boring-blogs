@@ -177,13 +177,4 @@ export default {
   position: sticky !important;
   top: 0 !important;
 }
-
-/* comments */
-#vcomments .vwrap {
-  border-radius: 24px;
-  border: thin solid rgba(0, 0, 0, 0.12);
-}
-#veditor {
-  letter-spacing: 0.5px;
-}
 </style>

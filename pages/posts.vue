@@ -17,9 +17,22 @@
 export default {
   name: 'PostsPage',
   layout: 'posts',
-  async asyncData({ $content, query }) {
-    const articles = (await $content({ deep: true }).only(['path']).fetch())
-      .filter((c) => !query.category || c.path.startsWith(`/${query.category}`))
+  data: () => ({ articles: [] }),
+  head() {
+    return {
+      title: this.$route.query.category || 'All Posts',
+      titleTemplate: 'Category - %s',
+    }
+  },
+  async mounted() {
+    const articles = (
+      await this.$content({ deep: true }).only(['path']).fetch()
+    )
+      .filter(
+        (c) =>
+          !this.$route.query.category ||
+          c.path.startsWith(`/${this.$route.query.category}`)
+      )
       .map((p) => {
         const infoArr = p.path.split('/')[2].split('_')
         return {
@@ -30,16 +43,7 @@ export default {
       })
 
     articles.sort((p1, p2) => new Date(p2.date) - new Date(p1.date))
-
-    return {
-      articles,
-    }
-  },
-  head() {
-    return {
-      title: this.$route.query.category || 'All Posts',
-      titleTemplate: 'Category - %s',
-    }
+    this.articles = articles
   },
 }
 </script>
