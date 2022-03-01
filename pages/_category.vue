@@ -4,6 +4,7 @@
       v-for="({ title, to, date }, index) in articles"
       :key="index"
       :to="to"
+      :exact="true"
     >
       {{ title }}
       <v-divider class="mx-2" />
@@ -17,31 +18,40 @@
 export default {
   name: 'CategoryPage',
   layout: 'category',
-  async asyncData({ $content, params }) {
-    const articles = (await $content({ deep: true }).only(['path']).fetch())
+  async asyncData({ $content, params, store }) {
+    const nameAliasMap = store.state.categories.reduce(
+      (pre, curr) => ({ ...pre, [curr.name]: curr.alias }),
+      {}
+    )
+    const articles = (
+      await $content({ deep: true })
+        .only(['path', 'title', 'date', 'category'])
+        .fetch()
+    )
       .filter(
         (c) =>
           params.category.toLowerCase() === 'all-posts' ||
-          c.path.startsWith(`/${params.category}`)
+          nameAliasMap[c.category] === params.category
       )
-      .map((p) => {
-        const infoArr = p.path.split('/')[2].split('_')
-        return {
-          title: infoArr[1],
-          date: infoArr[0],
-          to: p.path,
-        }
-      })
+      .map((p) => ({
+        title: p.title,
+        date: p.date,
+        to: '/' + nameAliasMap[p.category] + p.path,
+      }))
 
-    articles.sort((p1, p2) => new Date(p2.date) - new Date(p1.date))
+    articles.sort((a1, a2) => new Date(a2.date) - new Date(a1.date))
 
     return {
       articles,
     }
   },
   head() {
+    const aliasNameMap = this.$store.state.categories.reduce(
+      (pre, curr) => ({ ...pre, [curr.name]: curr.alias }),
+      {}
+    )
     return {
-      title: this.$route.query.category || 'All Posts',
+      title: aliasNameMap[this.$route.params.category] || 'All Posts',
       titleTemplate: 'Category - %s',
     }
   },

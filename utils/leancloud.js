@@ -7,10 +7,10 @@ const AV = require('leancloud-storage')
   })
 
 export const visit = (target) => {
-  import('device-uuid').then((module) => {
+  return import('device-uuid').then((module) => {
     const uuid = new module.DeviceUUID().get()
     const query = new AV.Query('Visit')
-    query
+    return query
       .equalTo('uuid', uuid)
       .equalTo('target', target)
       .first()
@@ -21,16 +21,19 @@ export const visit = (target) => {
           visit.set('uuid', uuid)
           visit.set('target', target)
           visit.save()
+          return true
+        } else {
+          return false
         }
       })
   })
 }
 
 export const star = (target) => {
-  import('device-uuid').then((module) => {
+  return import('device-uuid').then((module) => {
     const uuid = new module.DeviceUUID().get()
     const query = new AV.Query('Star')
-    query
+    return query
       .equalTo('uuid', uuid)
       .equalTo('target', target)
       .first()
@@ -41,6 +44,9 @@ export const star = (target) => {
           star.set('uuid', uuid)
           star.set('target', target)
           star.save()
+          return true
+        } else {
+          return false
         }
       })
   })

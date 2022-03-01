@@ -1,10 +1,5 @@
 <template>
-  <v-container
-    ref="container"
-    fluid
-    fill-height
-    class="overflow-hidden align-stretch"
-  >
+  <v-container fluid fill-height class="overflow-hidden align-stretch">
     <v-img
       src="https://picsum.photos/1920/1080?random"
       width="100%"
@@ -50,7 +45,7 @@
               <span>{{ generalizeAmount(posts) }}</span>
             </span>
             <span>
-              <v-btn icon x-small @click="addStar">
+              <v-btn icon x-small :disabled="stars === '-'" @click="addStar">
                 <v-icon small>mdi-star </v-icon>
               </v-btn>
               <span>{{ generalizeAmount(stars) }}</span>
@@ -116,8 +111,11 @@
           :cycle="false"
           :show-arrows="false"
           :hide-delimiters="categories.length <= carouselSize"
-          :class="{ 'flex-center-carousel': $vuetify.breakpoint.lgAndUp }"
-          :height="carouselHeight"
+          :class="{
+            'flex-center-carousel': $vuetify.breakpoint.lgAndUp,
+            'pb-12': categories.length > carouselSize,
+          }"
+          height="fit-content"
           touchless
           hide-delimiter-background
         >
@@ -125,9 +123,15 @@
             v-for="carousel in Math.ceil(categories.length / carouselSize)"
             :key="carousel"
           >
-            <v-row class="flex-grow-1 ma-0" style="width: 100%">
+            <v-row
+              class="flex-grow-1 ma-0"
+              style="width: 100%"
+              :no-gutters="$vuetify.breakpoint.mdAndDown"
+            >
               <v-col
-                v-for="({ title, description }, index) in categories.slice(
+                v-for="(
+                  { name, description, alias }, index
+                ) in categories.slice(
                   (carousel - 1) * carouselSize,
                   (carousel - 1) * carouselSize + carouselSize
                 )"
@@ -137,9 +141,19 @@
                 lg="4"
                 md="6"
                 sm="6"
+                :class="{
+                  'pr-2': mdAndSm && index % 2 === 0,
+                  'pl-2': mdAndSm && index % 2 === 1,
+                  'pb-4':
+                    $vuetify.breakpoint.mdAndDown &&
+                    index <
+                      (carousel - 1) * carouselSize + carouselSize - mdAndSm
+                      ? 2
+                      : 1,
+                }"
               >
-                <v-card class="rounded-xl pa-1 blurred" :to="`/${title}`">
-                  <v-card-title class="py-2">{{ title }}</v-card-title>
+                <v-card class="rounded-xl pa-1 blurred" :to="`/${alias}`">
+                  <v-card-title class="py-2">{{ name }}</v-card-title>
                   <v-card-text class="text-truncate" :title="description">
                     {{ description }}
                   </v-card-text>
@@ -186,7 +200,6 @@ import { getStars } from '@/utils/leancloud'
 export default {
   name: 'IndexPage',
   data: () => ({
-    containerHeight: 0,
     star,
     posts: '-',
     stars: '-',
@@ -202,35 +215,36 @@ export default {
         ? 12
         : this.$vuetify.breakpoint.smAndUp
         ? 6
-        : 3
+        : 4
     },
-    carouselHeight() {
-      return this.$vuetify.breakpoint.lgAndUp
-        ? Math.floor(this.containerHeight * 0.74)
-        : Math.floor(this.containerHeight * 0.48)
+    mdAndSm() {
+      return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.md
     },
   },
   async mounted() {
-    const { offsetHeight } = this.$refs.container
-    this.containerHeight = offsetHeight
-
-    // posts
     this.posts = (await this.$content({ deep: true }).fetch()).length
-
-    // stars
     this.stars = await getStars('/boring-blogs')
   },
   methods: {
-    addStar(ev) {
-      star(ev)
+    async addStar(ev) {
+      star(ev) // fireworks
 
-      // 防抖
       if (!this.addStarTimerHandle) {
         const { star: addStar } = require('@/utils/leancloud')
-        addStar('/boring-blogs')
-        getStars('/boring-blogs').then((count) => {
-          this.stars = count
-        })
+        const added = await addStar('/boring-blogs')
+        if (added) {
+          this.stars += 1
+        } else {
+          this.$store.dispatch(
+            'notify',
+            this.$store.state.starredFeedbackArr[
+              Math.floor(
+                Math.random() * this.$store.state.starredFeedbackArr.length
+              )
+            ]
+          )
+        }
+
         this.addStarTimerHandle = setTimeout(() => {
           this.addStarTimerHandle = null
         }, 2000)

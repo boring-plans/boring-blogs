@@ -11,7 +11,7 @@
     </v-card-text>
     <v-card-text class="py-2 d-flex align-center justify-space-between">
       <span>
-        <v-btn icon x-small @click="addStar">
+        <v-btn icon x-small :disabled="stars === '-'" @click="addStar">
           <v-icon small>mdi-star </v-icon>
         </v-btn>
         Stars
@@ -25,7 +25,9 @@
         </v-btn>
         Posted on
       </span>
-      <v-chip class="px-2" small>{{ date }}</v-chip>
+      <v-chip class="px-2" small>{{
+        new Date(date).toLocaleDateString()
+      }}</v-chip>
     </v-card-text>
   </v-card>
 </template>
@@ -43,30 +45,30 @@ export default {
     visits: '-',
     addStarTimerHandle: null,
   }),
-  watch: {
-    async date(val) {
-      if (val) {
-        this.stars = await getStars(decodeURI(this.$route.path))
-        this.visits = await getVisits(decodeURI(this.$route.path))
-      }
-    },
-  },
   async mounted() {
-    // 首次 render
-    this.stars = await getStars(decodeURI(this.$route.path))
-    this.visits = await getVisits(decodeURI(this.$route.path))
+    this.stars = await getStars(this.$route.path)
+    this.visits = await getVisits(this.$route.path)
   },
   methods: {
-    addStar(ev) {
-      star(ev)
+    async addStar(ev) {
+      star(ev) // fireworks
 
-      // 防抖
       if (!this.addStarTimerHandle) {
         const { star: addStar } = require('@/utils/leancloud')
-        addStar(decodeURI(this.$route.path))
-        getStars(decodeURI(this.$route.path)).then((count) => {
-          this.stars = count
-        })
+        const added = await addStar(this.$route.path)
+        if (added) {
+          this.stars += 1
+        } else {
+          this.$store.dispatch(
+            'notify',
+            this.$store.state.starredFeedbackArr[
+              Math.floor(
+                Math.random() * this.$store.state.starredFeedbackArr.length
+              )
+            ]
+          )
+        }
+
         this.addStarTimerHandle = setTimeout(() => {
           this.addStarTimerHandle = null
         }, 2000)

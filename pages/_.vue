@@ -1,28 +1,58 @@
 <template>
   <v-card flat>
     <article>
-      <nuxt-content :document="article" />
+      <nuxt-content :document="post" />
     </article>
   </v-card>
 </template>
 <script>
-export default {
-  layout: 'post',
-  async asyncData({ $content, params, error }) {
-    const path = `/${params.pathMatch || 'index'}`
-    const [article] = await $content({ deep: true }).where({ path }).fetch()
+import { visit } from '@/utils/leancloud'
 
-    if (!article) {
+export default {
+  name: 'PostPage',
+  layout: 'post',
+  async asyncData({ $content, params, store, error }) {
+    const nameAliasMap = store.state.categories.reduce(
+      (pre, curr) => ({ ...pre, [curr.name]: curr.alias }),
+      {}
+    )
+    const path = `/${params.pathMatch.split('/').pop()}`
+    const posts = await $content({ deep: true }).fetch()
+    posts.sort((a1, a2) => new Date(a2.date) - new Date(a1.date))
+
+    const currentIndex = posts.indexOf(posts.find((p) => p.path === path))
+    if (currentIndex === -1) {
       return error({ statusCode: 404, message: 'Article not found' })
+    } else {
+      visit('/' + params.pathMatch)
     }
 
+    const post = posts[currentIndex]
+    const lastPost = posts[currentIndex - 1] || {
+      title: 'Back to home',
+      path: '/',
+      category: '',
+    }
+    const nextPost = posts[currentIndex + 1] || {
+      title: 'Back to home',
+      path: '/',
+      category: '',
+    }
+    post.categoryAlias = nameAliasMap[post.category]
+    lastPost.category && (lastPost.category = nameAliasMap[lastPost.category])
+    nextPost.category && (nextPost.category = nameAliasMap[nextPost.category])
+
+    await store.commit('SET_POST', post)
+    await store.commit('SET_LAST_POST', lastPost)
+    await store.commit('SET_NEXT_POST', nextPost)
+
     return {
-      article,
+      post,
     }
   },
   head() {
     return {
-      title: this.$route.params.pathMatch.split('/')[0],
+      title: this.title,
       titleTemplate: 'Category - %s',
     }
   },
@@ -67,7 +97,7 @@ article h6 {
 }
 
 article h2 {
-  font-size: 24px;
+  font-size: 22px;
 }
 
 article h3 {

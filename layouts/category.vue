@@ -139,8 +139,14 @@ export default {
     drawer: false,
   }),
   computed: {
+    aliasNameMap() {
+      return this.$store.state.categories.reduce(
+        (pre, curr) => ({ ...pre, [curr.alias]: curr.name }),
+        {}
+      )
+    },
     category() {
-      return this.$route.params.category
+      return this.aliasNameMap[this.$route.params.category] || 'All Posts'
     },
     concise() {
       return this.$vuetify.breakpoint.mdAndDown

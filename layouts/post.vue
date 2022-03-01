@@ -71,17 +71,17 @@
                 >
                   <v-card-text class="py-0 d-flex align-center">
                     <v-chip
-                      v-for="(keyword, index) in post.tags"
+                      v-for="(tag, index) in post.tags"
                       :key="index"
                       small
                       class="mr-1 px-2"
                     >
-                      {{ keyword }}
+                      {{ tag }}
                     </v-chip>
                   </v-card-text>
                 </v-card>
                 <v-card flat class="mt-3 rounded-xl py-4" outlined>
-                  <statistics :date="post.date" />
+                  <statistics :key="$route.path" :date="post.date" />
                 </v-card>
               </template>
             </v-card>
@@ -97,13 +97,10 @@
                     to: '/',
                   },
                   {
-                    text: category,
+                    text: post.category,
                     disabled: false,
-                    to: `/${category}`,
+                    to: `/${post.categoryAlias}`,
                     exact: true,
-                  },
-                  {
-                    text: post.title,
                   },
                 ]"
               ></v-breadcrumbs>
@@ -119,22 +116,41 @@
               </v-avatar>
             </v-row>
             <v-card outlined class="px-6 rounded-xl py-4 mb-6">
+              <v-card-title
+                v-if="post"
+                class="pa-0"
+                style="font-size: 30px; font-weight: 520"
+              >
+                {{ post.title }}
+              </v-card-title>
+              <v-divider class="my-4" />
               <Nuxt />
               <v-card-text class="pt-8 pb-3 px-0">
                 <v-divider />
               </v-card-text>
-              <v-card-text
-                class="d-flex align-center justify-space-between px-0"
+              <v-row
+                v-if="lastPost && nextPost"
+                class="px-2 text-truncate justify-space-between"
               >
-                <v-btn text small class="px-1" :to="lastPost.to">
+                <v-btn
+                  text
+                  small
+                  class="px-1"
+                  :to="lastPost.category + lastPost.path"
+                >
                   <v-icon small class="mr-1">mdi-arrow-left</v-icon>
                   {{ lastPost.title }}
                 </v-btn>
-                <v-btn text small class="px-1" :to="nextPost.to">
+                <v-btn
+                  text
+                  small
+                  class="px-1"
+                  :to="nextPost.category + nextPost.path"
+                >
                   {{ nextPost.title }}
                   <v-icon small class="ml-1">mdi-arrow-right </v-icon>
                 </v-btn>
-              </v-card-text>
+              </v-row>
             </v-card>
             <div id="vcomments"></div>
           </v-col>
@@ -179,7 +195,7 @@
           <template v-if="post">
             <v-divider class="ma-6" />
             <v-card class="px-4 py-2 mt-3" flat>
-              <statistics visits="100" stars="28" :date="post.date" />
+              <statistics :key="$route.path" :date="post.date" />
             </v-card>
             <template v-if="titles && titles.length">
               <v-divider class="ma-6" />
@@ -198,14 +214,17 @@
             </template>
           </template>
         </v-navigation-drawer>
+        <v-snackbar :value="$store.state.snackbar" color="rgba(0,0,0,0.7)">
+          {{ $store.state.snackbarText }}
+        </v-snackbar>
       </v-container>
     </v-main>
   </v-app>
 </template>
 <script>
+import { mapState } from 'vuex'
 import PostContents from '@/components/PostContents.vue'
 import Statistics from '@/components/Statistics.vue'
-import { visit } from '@/utils/leancloud'
 
 export default {
   name: 'PostLayout',
@@ -216,24 +235,10 @@ export default {
     showToTop: false,
     windowScrollY: 0,
     drawer: false,
-    posts: [],
     visits: '-',
     stars: '-',
   }),
-  head() {
-    return (this.post && this.post.title) || this.category
-  },
   computed: {
-    category() {
-      return this.$route.params.pathMatch.split('/')[0]
-    },
-    post() {
-      return this.posts
-        ? this.posts.find((p) =>
-            this.$route.params.pathMatch.split('/')[1].includes(p.title)
-          )
-        : null
-    },
     activeContentTitle() {
       let min = Infinity
       return this.titles.reduce((pre, curr, index) => {
@@ -249,52 +254,13 @@ export default {
         return pre
       }, 0)
     },
-    nextPost() {
-      if (this.posts && this.posts.length) {
-        const currIndex = this.posts
-          .map((p) => `${p.category}/${p.date}_${p.title}`)
-          .indexOf(this.$route.params.pathMatch)
-
-        return currIndex + 1 < this.posts.length
-          ? {
-              title: this.posts[currIndex + 1].title,
-              to: `/${this.posts[currIndex + 1].category}/${
-                this.posts[currIndex + 1].date
-              }_${this.posts[currIndex + 1].title}`,
-            }
-          : {
-              title: 'Back to home',
-              to: '/',
-            }
-      }
-      return {}
-    },
-    lastPost() {
-      if (this.posts) {
-        const currIndex = this.posts
-          .map((p) => `${p.category}/${p.date}_${p.title}`)
-          .indexOf(this.$route.params.pathMatch)
-
-        return currIndex - 1 >= 0
-          ? {
-              title: this.posts[currIndex - 1].title,
-              to: `/${this.posts[currIndex - 1].category}/${
-                this.posts[currIndex - 1].date
-              }_${this.posts[currIndex - 1].title}`,
-            }
-          : {
-              title: 'Back to home',
-              to: '/',
-            }
-      }
-      return {}
-    },
     concise() {
       return this.$vuetify.breakpoint.mdAndDown
     },
     maxDrawerContentsHeight() {
-      return window.screen.height - 480
+      return window.screen.height - 500
     },
+    ...mapState(['post', 'lastPost', 'nextPost']),
   },
   watch: {
     $route(val) {
@@ -309,37 +275,17 @@ export default {
         this.drawer = false
       }
     },
-    post(val) {
-      if (val) {
-        visit(decodeURI(this.$route.path))
-      }
-    },
   },
   mounted() {
     this.initialize()
     window.addEventListener('scroll', this.updateWindowScrollY)
+    window.addEventListener('resize', this.onResize)
   },
   beforeDestroy() {
     window.removeEventListener('scroll', this.updateWindowScrollY)
+    window.removeEventListener('resize', this.onResize)
   },
   methods: {
-    async loadPosts() {
-      const posts = (
-        await this.$content({ deep: true }).only(['path', 'tags']).fetch()
-      ).map((p) => {
-        const categoryAndTitle = p.path.split('/')
-        const infoArr = categoryAndTitle[2].split('_')
-        return {
-          date: infoArr[0],
-          title: infoArr[1],
-          category: categoryAndTitle[1],
-          tags: p.tags,
-        }
-      })
-
-      posts.sort((p1, p2) => new Date(p1.date) - new Date(p2.date))
-      this.posts = posts
-    },
     toTop() {
       window.scrollTo({
         top: 0,
@@ -369,6 +315,13 @@ export default {
         })
 
       // -- comment system
+      this.initializeComments()
+    },
+    updateWindowScrollY() {
+      this.windowScrollY = window.scrollY
+      this.showToTop = window.scrollY > 800
+    },
+    initializeComments() {
       const valineComments = document.getElementById('vcomments')
       valineComments && (valineComments.innerHTML = '')
       const Valine = require('valine')
@@ -379,15 +332,16 @@ export default {
         appKey: 'JjtyBxp9QAmFt0gDRsvUOCEl',
         avatar: 'retro',
         placeholder: "This time, Yuri's going down!",
-        path: decodeURI(this.$route.path),
+        path: this.$route.path,
       })
-
-      // -- posts
-      this.loadPosts()
     },
-    updateWindowScrollY() {
-      this.windowScrollY = window.scrollY
-      this.showToTop = window.scrollY > 800
+    onResize() {
+      setTimeout(() => {
+        const valineComments = document.getElementById('vcomments')
+        if (valineComments && valineComments.innerHTML === '') {
+          this.initializeComments()
+        }
+      }, 370)
     },
   },
 }
