@@ -50,8 +50,8 @@ export default {
   },
   head() {
     return {
-      title: this.title,
-      titleTemplate: 'Category - %s',
+      title: this.post && this.post.title,
+      titleTemplate: '%s',
     }
   },
   mounted() {
