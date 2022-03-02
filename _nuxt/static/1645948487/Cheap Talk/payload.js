@@ -1,1 +1,0 @@
-__NUXT_JSONP__("/Cheap%20Talk", {data:[{articles:[{title:"孤蝉唱夏",date:"2020-05-21",to:"\u002FCheap Talk\u002F2020-05-21_孤蝉唱夏"},{title:"当我踩小强时我踩些什么",date:"2018-08-31",to:"\u002FCheap Talk\u002F2018-08-31_当我踩小强时我踩些什么"}]}],fetch:{},mutations:[]});

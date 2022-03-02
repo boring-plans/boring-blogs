@@ -1,0 +1,1 @@
+__NUXT_JSONP__("/stereotyped", {data:[{articles:[{title:"2021 年 5 月前端造火箭副本掉落",date:"2021-05-18T00:00:00.000Z",to:"\u002Fstereotyped\u002F2021-005"},{title:"2021 年 4 月前端造火箭副本掉落",date:"2021-04-26T00:00:00.000Z",to:"\u002Fstereotyped\u002F2021-003"}]}],fetch:{},mutations:[]});
