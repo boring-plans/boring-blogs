@@ -155,7 +155,7 @@
                 <v-list v-else :key="$route.path" dense class="px-0">
                   <v-list-item
                     :to="'/' + lastPost.category + lastPost.path"
-                    class="px-0"
+                    class="px-1"
                   >
                     <v-list-item-subtitle
                       class="flex-grow-0"
@@ -169,7 +169,7 @@
                   </v-list-item>
                   <v-list-item
                     :to="'/' + nextPost.category + nextPost.path"
-                    class="px-0"
+                    class="px-1"
                   >
                     <v-list-item-subtitle
                       class="flex-grow-0"

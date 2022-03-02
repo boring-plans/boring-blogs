@@ -1,25 +1,27 @@
 <template>
   <v-list dense rounded :class="{ 'px-0': $vuetify.breakpoint.xs }">
-    <v-list-item
-      v-for="({ title, to, date }, index) in articles"
-      :key="index"
-      :to="to"
-      :class="{ 'px-0': $vuetify.breakpoint.xs }"
-    >
-      <template v-if="$vuetify.breakpoint.smAndUp">
-        {{ title }}
-        <v-divider class="mx-2" />
-        <span class="text-caption">
-          {{ new Date(date).toDateString() }}
-        </span>
-      </template>
-      <v-list-item-content v-else>
-        <v-list-item-title>{{ title }}</v-list-item-title>
-        <v-list-item-subtitle>{{
-          new Date(date).toDateString()
-        }}</v-list-item-subtitle>
-      </v-list-item-content>
-    </v-list-item>
+    <template v-for="({ title, to, date }, index) in articles">
+      <v-list-item :key="index" :to="to">
+        <template v-if="$vuetify.breakpoint.smAndUp">
+          {{ title }}
+          <v-divider class="mx-2" />
+          <span class="text-caption">
+            {{ new Date(date).toDateString() }}
+          </span>
+        </template>
+        <v-list-item-content v-else>
+          <v-list-item-title>{{ title }}</v-list-item-title>
+          <v-list-item-subtitle>{{
+            new Date(date).toDateString()
+          }}</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-divider
+        v-if="index < articles.length - 1"
+        :key="'divider-' + index"
+        class="mx-4 my-1"
+      />
+    </template>
   </v-list>
 </template>
 <script>
@@ -55,7 +57,7 @@ export default {
   },
   head() {
     const aliasNameMap = this.$store.state.categories.reduce(
-      (pre, curr) => ({ ...pre, [curr.name]: curr.alias }),
+      (pre, curr) => ({ ...pre, [curr.alias]: curr.name }),
       {}
     )
     return {
