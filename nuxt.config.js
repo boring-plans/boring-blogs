@@ -78,6 +78,32 @@ export default {
     },
   },
 
+  generate: {
+    crawler: false,
+    async routes() {
+      const { $content } = require('@nuxt/content')
+      const { state } = require('./store')
+
+      const nameAliasMap = state().categories.reduce(
+        (pre, curr) => ({ ...pre, [curr.name]: curr.alias }),
+        {}
+      )
+      const posts = await $content({ deep: true })
+        .only(['path', 'category'])
+        .fetch()
+
+      return [
+        ...posts.reduce(
+          (pre, curr) =>
+            pre
+              .add(`/${nameAliasMap[curr.category]}${curr.path}`)
+              .add('/' + nameAliasMap[curr.category]),
+          new Set()
+        ),
+      ].concat('/')
+    },
+  },
+
   router: {
     base: '/boring-blogs/',
   },

@@ -1,4 +1,4 @@
-const AV = require('leancloud-storage')
+import AV from 'leancloud-storage'
 
 !AV.applicationId &&
   AV.init({
@@ -7,49 +7,47 @@ const AV = require('leancloud-storage')
   })
 
 export const visit = (target) => {
-  return import('device-uuid').then((module) => {
-    const uuid = new module.DeviceUUID().get()
-    const query = new AV.Query('Visit')
-    return query
-      .equalTo('uuid', uuid)
-      .equalTo('target', target)
-      .first()
-      .then((visit) => {
-        if (!visit) {
-          const Visit = AV.Object.extend('Visit')
-          visit = new Visit()
-          visit.set('uuid', uuid)
-          visit.set('target', target)
-          visit.save()
-          return true
-        } else {
-          return false
-        }
-      })
-  })
+  const { DeviceUUID } = require('device-uuid/lib/device-uuid')
+  const uuid = new DeviceUUID().get()
+  const query = new AV.Query('Visit')
+  return query
+    .equalTo('uuid', uuid)
+    .equalTo('target', target)
+    .first()
+    .then((visit) => {
+      if (!visit) {
+        const Visit = AV.Object.extend('Visit')
+        visit = new Visit()
+        visit.set('uuid', uuid)
+        visit.set('target', target)
+        visit.save()
+        return true
+      } else {
+        return false
+      }
+    })
 }
 
 export const star = (target) => {
-  return import('device-uuid').then((module) => {
-    const uuid = new module.DeviceUUID().get()
-    const query = new AV.Query('Star')
-    return query
-      .equalTo('uuid', uuid)
-      .equalTo('target', target)
-      .first()
-      .then((star) => {
-        if (!star) {
-          const Star = AV.Object.extend('Star')
-          star = new Star()
-          star.set('uuid', uuid)
-          star.set('target', target)
-          star.save()
-          return true
-        } else {
-          return false
-        }
-      })
-  })
+  const { DeviceUUID } = require('device-uuid/lib/device-uuid')
+  const uuid = new DeviceUUID().get()
+  const query = new AV.Query('Star')
+  return query
+    .equalTo('uuid', uuid)
+    .equalTo('target', target)
+    .first()
+    .then((star) => {
+      if (!star) {
+        const Star = AV.Object.extend('Star')
+        star = new Star()
+        star.set('uuid', uuid)
+        star.set('target', target)
+        star.save()
+        return true
+      } else {
+        return false
+      }
+    })
 }
 
 export const getVisits = (target) => {

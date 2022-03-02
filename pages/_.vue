@@ -23,8 +23,6 @@ export default {
     const currentIndex = posts.indexOf(posts.find((p) => p.path === path))
     if (currentIndex === -1) {
       return error({ statusCode: 404, message: 'Article not found' })
-    } else {
-      visit('/' + params.pathMatch)
     }
 
     const post = posts[currentIndex]
@@ -55,6 +53,9 @@ export default {
       title: this.title,
       titleTemplate: 'Category - %s',
     }
+  },
+  mounted() {
+    visit(this.$route.path)
   },
 }
 </script>

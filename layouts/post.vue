@@ -125,12 +125,12 @@
               </v-card-title>
               <v-divider class="my-4" />
               <Nuxt />
-              <v-card-text class="pt-8 pb-3 px-0">
+              <v-card-text class="pt-6 px-0">
                 <v-divider />
               </v-card-text>
               <v-row
                 v-if="lastPost && nextPost"
-                class="px-2 text-truncate justify-space-between"
+                class="px-2 text-truncate justify-space-between py-3"
               >
                 <v-btn
                   text
@@ -315,7 +315,9 @@ export default {
         })
 
       // -- comment system
-      this.initializeComments()
+      setTimeout(() => {
+        this.initializeComments()
+      }, 370)
     },
     updateWindowScrollY() {
       this.windowScrollY = window.scrollY

@@ -215,7 +215,7 @@ export default {
         ? 12
         : this.$vuetify.breakpoint.smAndUp
         ? 6
-        : 4
+        : 3
     },
     mdAndSm() {
       return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.md
