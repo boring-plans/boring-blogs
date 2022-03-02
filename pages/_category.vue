@@ -17,7 +17,7 @@
         </v-list-item-content>
       </v-list-item>
       <v-divider
-        v-if="index < articles.length - 1"
+        v-if="$vuetify.breakpoint.xs && index < articles.length - 1"
         :key="'divider-' + index"
         class="mx-4 my-1"
       />
