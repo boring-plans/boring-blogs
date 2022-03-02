@@ -100,7 +100,7 @@ export default {
               .add('/' + nameAliasMap[curr.category]),
           new Set()
         ),
-      ].concat('/')
+      ].concat(['/', 'all-posts'])
     },
   },
 
