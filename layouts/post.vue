@@ -128,29 +128,61 @@
               <v-card-text class="pt-6 px-0">
                 <v-divider />
               </v-card-text>
-              <v-row
-                v-if="lastPost && nextPost"
-                class="px-2 text-truncate justify-space-between py-3"
-              >
-                <v-btn
-                  text
-                  small
-                  class="px-1"
-                  :to="lastPost.category + lastPost.path"
+              <template v-if="lastPost && nextPost">
+                <v-row
+                  v-if="$vuetify.breakpoint.smAndUp"
+                  class="px-2 text-truncate justify-space-between py-3"
                 >
-                  <v-icon small class="mr-1">mdi-arrow-left</v-icon>
-                  {{ lastPost.title }}
-                </v-btn>
-                <v-btn
-                  text
-                  small
-                  class="px-1"
-                  :to="nextPost.category + nextPost.path"
-                >
-                  {{ nextPost.title }}
-                  <v-icon small class="ml-1">mdi-arrow-right </v-icon>
-                </v-btn>
-              </v-row>
+                  <v-btn
+                    text
+                    small
+                    class="px-1"
+                    :to="'/' + lastPost.category + lastPost.path"
+                  >
+                    <v-icon small class="mr-1">mdi-arrow-left</v-icon>
+                    {{ lastPost.title }}
+                  </v-btn>
+                  <v-btn
+                    text
+                    small
+                    class="px-1"
+                    :to="'/' + nextPost.category + nextPost.path"
+                  >
+                    {{ nextPost.title }}
+                    <v-icon small class="ml-1">mdi-arrow-right </v-icon>
+                  </v-btn>
+                </v-row>
+                <v-list v-else :key="$route.path" dense class="px-0">
+                  <v-list-item
+                    :to="'/' + lastPost.category + lastPost.path"
+                    class="px-0"
+                  >
+                    <v-list-item-subtitle
+                      class="flex-grow-0"
+                      style="flex-basis: 20%"
+                    >
+                      Last:
+                    </v-list-item-subtitle>
+                    <v-list-item-title>
+                      {{ lastPost.title }}
+                    </v-list-item-title>
+                  </v-list-item>
+                  <v-list-item
+                    :to="'/' + nextPost.category + nextPost.path"
+                    class="px-0"
+                  >
+                    <v-list-item-subtitle
+                      class="flex-grow-0"
+                      style="flex-basis: 20%"
+                    >
+                      Next:
+                    </v-list-item-subtitle>
+                    <v-list-item-title>
+                      {{ nextPost.title }}
+                    </v-list-item-title>
+                  </v-list-item>
+                </v-list>
+              </template>
             </v-card>
             <div id="vcomments"></div>
           </v-col>
