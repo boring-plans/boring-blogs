@@ -52,7 +52,9 @@ export default {
   methods: {
     async plainlyAddStar(){
       const { star: addStar } = require('@/utils/leancloud')
-        const added = await addStar(this.$route.path)
+        // to replace 'xxx/xxxx/' with 'xxx/xxxx'
+        // cause above two actually represent the same post
+        const added = await addStar(this.$route.path.replace(/\/$/, ''))
         if (added) {
           this.stars += 1
         } else {
@@ -66,7 +68,7 @@ export default {
           )
         }
     },
-    async addStar(ev) {
+    addStar(ev) {
       star(ev) // fireworks
       this.addStarTimerHandle && clearTimeout(this.addStarTimerHandle);
       this.addStarTimerHandle = setTimeout(()=>{
