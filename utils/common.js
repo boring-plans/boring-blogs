@@ -19,7 +19,7 @@ export const star = (ev) => {
     bubbleSizeMaximum: 8,
     parentNode: div,
   })
-  setTimeout(() => div.remove(), 370)
+  setTimeout(() => div.remove(), 800)
 }
 
 export const generalizeAmount = (amount) => {
