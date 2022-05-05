@@ -226,11 +226,8 @@ export default {
     this.stars = await getStars('/boring-blogs')
   },
   methods: {
-    async addStar(ev) {
-      star(ev) // fireworks
-
-      if (!this.addStarTimerHandle) {
-        const { star: addStar } = require('@/utils/leancloud')
+    async plainlyAddStar(){
+      const { star: addStar } = require('@/utils/leancloud')
         const added = await addStar('/boring-blogs')
         if (added) {
           this.stars += 1
@@ -244,11 +241,15 @@ export default {
             ]
           )
         }
+    },
+    async addStar(ev) {
+      star(ev) // fireworks
 
-        this.addStarTimerHandle = setTimeout(() => {
-          this.addStarTimerHandle = null
-        }, 2000)
-      }
+      this.addStarTimerHandle && clearTimeout(this.addStarTimerHandle);
+      this.addStarTimerHandle = setTimeout(()=>{
+        this.plainlyAddStar();
+        this.addStarTimerHandle = null;
+      }, 500);
     },
   },
 }

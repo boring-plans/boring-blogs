@@ -50,11 +50,8 @@ export default {
     this.visits = await getVisits(this.$route.path)
   },
   methods: {
-    async addStar(ev) {
-      star(ev) // fireworks
-
-      if (!this.addStarTimerHandle) {
-        const { star: addStar } = require('@/utils/leancloud')
+    async plainlyAddStar(){
+      const { star: addStar } = require('@/utils/leancloud')
         const added = await addStar(this.$route.path)
         if (added) {
           this.stars += 1
@@ -68,11 +65,14 @@ export default {
             ]
           )
         }
-
-        this.addStarTimerHandle = setTimeout(() => {
-          this.addStarTimerHandle = null
-        }, 2000)
-      }
+    },
+    async addStar(ev) {
+      star(ev) // fireworks
+      this.addStarTimerHandle && clearTimeout(this.addStarTimerHandle);
+      this.addStarTimerHandle = setTimeout(()=>{
+        this.plainlyAddStar();
+        this.addStarTimerHandle = null;
+      }, 500);
     },
   },
 }
