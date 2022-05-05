@@ -40,9 +40,20 @@ export default {
     lastPost.category && (lastPost.category = nameAliasMap[lastPost.category])
     nextPost.category && (nextPost.category = nameAliasMap[nextPost.category])
 
-    await store.commit('SET_POST', post)
-    await store.commit('SET_LAST_POST', lastPost)
-    await store.commit('SET_NEXT_POST', nextPost)
+    post.body.children.filter(c=>c.tag==='table').forEach(c=>{
+      Object.assign(c, {
+        type: 'element',
+        tag: 'div',
+        props: {
+          className: 'table-wrapper'
+        },
+        children: [JSON.parse(JSON.stringify(c))]
+      })
+    });
+
+    store.commit('SET_POST', post)
+    store.commit('SET_LAST_POST', lastPost)
+    store.commit('SET_NEXT_POST', nextPost)
 
     return {
       post,
@@ -154,12 +165,19 @@ article th {
   padding: 0;
 }
 
+article .table-wrapper {
+  max-width: 100%;
+  overflow: auto;
+}
+
 article table {
   border-collapse: collapse;
   empty-cells: show;
   margin: 0 auto 12px auto;
   border: thin solid #f0f0f0;
   font-size: 15px !important;
+  max-width: 100%;
+  overflow: auto;
 }
 
 article td,
