@@ -22,7 +22,7 @@
                   <v-img src="logo.png"></v-img>
                 </v-avatar>
                 <v-card-title class="justify-center pb-0">
-                  Newest Boy
+                  Allen Tao
                 </v-card-title>
                 <v-card-text> Bag'em up! </v-card-text>
                 <v-card-text id="contacts" class="d-flex justify-space-around">

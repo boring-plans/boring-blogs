@@ -30,7 +30,7 @@
           <v-avatar size="128" color="transparent" class="outlined">
             <v-img src="logo.png"></v-img>
           </v-avatar>
-          <v-card-title class="justify-center"> Newest Boy </v-card-title>
+          <v-card-title class="justify-center"> Allen Tao </v-card-title>
           <v-card-subtitle
             class="text-uppercase"
             style="letter-spacing: 0.37em"
@@ -242,7 +242,7 @@ export default {
           )
         }
     },
-    async addStar(ev) {
+    addStar(ev) {
       star(ev) // fireworks
 
       this.addStarTimerHandle && clearTimeout(this.addStarTimerHandle);
