@@ -121,7 +121,7 @@
             </v-card-text>
             <v-divider vertical class="my-12" />
             <v-card-text class="d-flex justify-space-around flex-column">
-              <v-card-title class="pb-0 px-0"> Newest Boy </v-card-title>
+              <v-card-title class="pb-0 px-0"> Allen Tao </v-card-title>
               <v-card-text class="px-0"> Bag'em up! </v-card-text>
             </v-card-text>
           </v-card>

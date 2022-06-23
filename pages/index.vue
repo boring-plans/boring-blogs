@@ -153,7 +153,10 @@
                 }"
               >
                 <v-card class="rounded-xl pa-1 blurred" :to="`/${alias}`">
-                  <v-card-title class="py-2">{{ name }}</v-card-title>
+                  <v-card-title class="py-2">
+                    {{ name }}
+                    <v-chip v-if="newlyUpdatedCategories.includes(name)" color="error" x-small class="px-1 ml-2 text-caption">New</v-chip>
+                  </v-card-title>
                   <v-card-text class="text-truncate" :title="description">
                     {{ description }}
                   </v-card-text>
@@ -203,6 +206,7 @@ export default {
     star,
     posts: '-',
     stars: '-',
+    newlyUpdatedCategories: [],
     generalizeAmount,
     addStarTimerHandle: null,
   }),
@@ -220,10 +224,13 @@ export default {
     mdAndSm() {
       return this.$vuetify.breakpoint.sm || this.$vuetify.breakpoint.md
     },
+
   },
   async mounted() {
-    this.posts = (await this.$content({ deep: true }).fetch()).length
+    const posts =  (await this.$content({ deep: true }).fetch())
+    this.posts = posts.length
     this.stars = await getStars('/boring-blogs')
+    this.newlyUpdatedCategories = [...new Set(posts.filter(p=>(new Date() - new Date(p.date))<3600*1000*72).map(p=>p.category))]
   },
   methods: {
     async plainlyAddStar(){
@@ -250,7 +257,7 @@ export default {
         this.plainlyAddStar();
         this.addStarTimerHandle = null;
       }, 500);
-    },
+    }
   },
 }
 </script>
